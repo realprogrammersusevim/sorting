@@ -1,5 +1,4 @@
-pub fn bubblesort(arr: Vec<u32>) -> Vec<u32> {
-    let mut arr = arr;
+pub fn bubblesort(mut arr: Vec<u32>) -> Vec<u32> {
     let mut swapped = true;
     while swapped {
         swapped = false;

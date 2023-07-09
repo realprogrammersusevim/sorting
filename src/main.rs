@@ -1,10 +1,10 @@
 mod bubblesort;
 mod generator;
+mod quicksort;
 
 use clap::Parser;
 use clap::Subcommand;
-use std::env;
-use std::path::Path;
+use std::vec;
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -16,7 +16,10 @@ struct Args {
 enum Subcmds {
     Quicksort,
     BubbleSort,
-    Generate,
+    Generate {
+        #[arg(short, long)]
+        length: Option<usize>,
+    },
 }
 
 fn main() {
@@ -24,13 +27,15 @@ fn main() {
     let datapath = concat!(env!("CARGO_MANIFEST_DIR"), "/data/random");
     let mut data: Vec<u32> = Vec::new();
 
-    if Path::new(datapath).exists() && args.subcmd != Subcmds::Generate {
-        data = generator::read_random(datapath).unwrap();
-    }
+    data = generator::read_random(datapath).unwrap_or(vec![]);
 
     match args.subcmd {
-        Subcmds::Generate => generator::create_random(1000, datapath).unwrap(),
-        Subcmds::Quicksort => unimplemented!(),
+        Subcmds::Generate { length } => {
+            generator::create_random(length.unwrap_or(1000), datapath).unwrap()
+        }
+        Subcmds::Quicksort => {
+            println!("{:?}", quicksort::quicksort(data))
+        }
         Subcmds::BubbleSort => println!("{:?}", bubblesort::bubblesort(data)),
     };
 }
