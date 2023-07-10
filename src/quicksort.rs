@@ -1,13 +1,13 @@
 use std::thread;
 
-pub fn quicksort(arr: Vec<u32>) -> Vec<u32> {
+pub fn quicksort(mut arr: Vec<u32>) -> Vec<u32> {
     if arr.len() > 1 {
-        let pivot = arr[arr.len() / 2];
+        let pivot = arr.swap_remove(arr.len() / 2);
         let mut left: Vec<u32> = vec![];
         let mut right: Vec<u32> = vec![];
 
-        for i in arr[1..arr.len()].iter() {
-            if i > &pivot {
+        for i in arr {
+            if i <= pivot {
                 left.push(i.to_owned());
             } else {
                 right.push(i.to_owned());
@@ -16,6 +16,7 @@ pub fn quicksort(arr: Vec<u32>) -> Vec<u32> {
 
         let mut sorted: Vec<u32> = Vec::new();
 
+        // 1500 seems to be the magic number on my computer
         if left.len() >= 15000 && right.len() >= 15000 {
             let left_handle = thread::spawn(move || quicksort(left));
             let right_handle = thread::spawn(move || quicksort(right));
